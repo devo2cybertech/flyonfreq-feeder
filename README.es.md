@@ -12,6 +12,8 @@ Tu receptor queda exactamente como está. Este programa solo lee la lista que ya
 
 ## Qué necesitas
 
+**¿Aún no tienes receptor?** Sigue la guía paso a paso que parte de una tarjeta SD vacía: <https://flyonfreq.com/feed/build>. El resto de esta página empieza cuando tu receptor ya funciona.
+
 - Un receptor con **readsb** (o dump1090-fa) que escriba un `aircraft.json` (una Raspberry Pi, una antena SDR y una antena de 1090 MHz).
 - Python 3 y systemd (vienen con Raspberry Pi OS).
 - Una **clave** para tu receptor. Pídela en la página Feed flyonfreq: <https://flyonfreq.com/feed>. Leemos cada solicitud; la clave llega cuando se aprueba. La clave es secreta: identifica a tu receptor.
