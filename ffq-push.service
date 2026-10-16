@@ -1,0 +1,20 @@
+[Unit]
+Description=Send this receiver's aircraft list to flyonfreq
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+EnvironmentFile=/etc/ffq-push.env
+ExecStart=/usr/bin/python3 /opt/ffq/ffq-push.py
+Restart=always
+RestartSec=5
+Nice=10
+# Least rights: a throw-away user, no new privileges, read-only system. The program only reads the aircraft list and makes outgoing HTTPS calls.
+DynamicUser=yes
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

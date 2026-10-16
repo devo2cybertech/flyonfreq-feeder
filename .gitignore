@@ -1,0 +1,4 @@
+*.env
+!ffq-push.env.example
+__pycache__/
+*.pyc
