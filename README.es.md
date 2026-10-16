@@ -19,6 +19,7 @@ Tu receptor queda exactamente como está. Este programa solo lee la lista que ya
 ## Instalar (unos cinco minutos)
 
 ```bash
+sudo apt-get install -y git        # solo si git todavía no está instalado
 git clone https://github.com/devo2cybertech/flyonfreq-feeder.git
 cd flyonfreq-feeder
 sudo ./install.sh

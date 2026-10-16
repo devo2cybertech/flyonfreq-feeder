@@ -19,6 +19,7 @@ You keep your receiver exactly as it is. This program only reads the list it alr
 ## Install (about five minutes)
 
 ```bash
+sudo apt-get install -y git        # only if git is not installed yet
 git clone https://github.com/devo2cybertech/flyonfreq-feeder.git
 cd flyonfreq-feeder
 sudo ./install.sh
