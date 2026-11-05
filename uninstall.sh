@@ -19,6 +19,8 @@ if [ "${1:-}" = "--restore" ]; then
   exit 0
 fi
 
+[ "$SYSTEMD" -eq 1 ] && { systemctl disable --now ffq-watchdog.timer 2>/dev/null || true; }
+rm -f "$(dirname "$UNIT")/ffq-watchdog.service" "$(dirname "$UNIT")/ffq-watchdog.timer"
 [ "$SYSTEMD" -eq 1 ] && { systemctl disable --now ffq-push 2>/dev/null || true; }
 rm -f "$UNIT" "$ENV_FILE" "$OLD_BIN"
 rm -rf "$DEST"

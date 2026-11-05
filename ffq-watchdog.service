@@ -1,0 +1,7 @@
+[Unit]
+Description=flyonfreq feeder watchdog (one check)
+
+[Service]
+Type=oneshot
+EnvironmentFile=-/etc/ffq-push.env
+ExecStart=/opt/ffq/ffq-watchdog.sh

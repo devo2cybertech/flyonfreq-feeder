@@ -77,6 +77,10 @@ About 1 to 3 kilobytes per send near a quiet area, more near a busy airport. Pla
 
 After changing it: `sudo systemctl restart ffq-push`.
 
+## Optional watchdog (restart if the computer gets stuck)
+
+The installer asks whether to add a small watchdog (the default is no). Once a minute it checks two things: can this computer reach the internet, and is the sender running. If the sender is stopped for 5 minutes it starts it again. If something is wrong for 30 minutes in a row, it restarts the computer, at most once an hour. It never looks at flyonfreq itself, so a problem on our side can never restart your computer. Change the 30 minutes (10 or more) with `FFQ_WATCHDOG_MINUTES=60` in `/etc/ffq-push.env`. See what it did: `journalctl -t ffq-watchdog`. Remove it with `sudo ./uninstall.sh`. Reinstalling resets `FFQ_WATCHDOG_MINUTES`; add it again if you changed it.
+
 ## Update, or replace an older install
 
 ```bash

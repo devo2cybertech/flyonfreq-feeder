@@ -77,6 +77,10 @@ Entre 1 y 3 kilobytes por envío en una zona tranquila, más cerca de un aeropue
 
 Después de cambiarlo: `sudo systemctl restart ffq-push`.
 
+## Vigilante opcional (reiniciar si el equipo se atasca)
+
+El instalador pregunta si quieres añadir un pequeño vigilante (por defecto, no). Cada minuto revisa dos cosas: si este equipo llega a internet y si el emisor está funcionando. Si el emisor lleva 5 minutos detenido, lo vuelve a arrancar. Si algo falla durante 30 minutos seguidos, reinicia el equipo, como máximo una vez por hora. Nunca consulta a flyonfreq, así que un problema de nuestro lado jamás reiniciará tu equipo. Cambia los 30 minutos (10 o más) con `FFQ_WATCHDOG_MINUTES=60` en `/etc/ffq-push.env`. Mira lo que hizo con `journalctl -t ffq-watchdog`. Quítalo con `sudo ./uninstall.sh`. Al reinstalar se pierde `FFQ_WATCHDOG_MINUTES`; vuelve a añadirlo si lo habías cambiado.
+
 ## Actualizar, o reemplazar una instalación anterior
 
 ```bash

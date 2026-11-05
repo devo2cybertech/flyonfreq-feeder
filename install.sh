@@ -3,7 +3,7 @@
 # Run it from the folder you downloaded:   sudo ./install.sh
 # What it does: checks the program against SHA256SUMS, saves anything already installed to a backup folder, copies the program to /opt/ffq, keeps your current key and
 # settings if there are any (or asks for your key, typed hidden, never put on a command line), writes /etc/ffq-push.env (only root can read it), installs the service
-# and starts it. If an older copy of the sender is found, it is replaced: there is never more than one sender running. Read it first: it is short.
+# and starts it. It then offers (default: no) a small watchdog that restarts the computer after 30 minutes offline. If an older copy of the sender is found, it is replaced: there is never more than one sender running. Read it first: it is short.
 set -euo pipefail
 
 ROOT="${FFQ_ROOT:-}"      # empty on a real machine (the tests point it at a folder)
@@ -102,6 +102,16 @@ if [ "$SYSTEMD" -eq 1 ]; then
 else
   [ -e "$OLD_BIN" ] && rm -f "$OLD_BIN"
 fi
+echo "Optional: a watchdog that restarts this computer if it stays offline (or the sender stays stopped) for 30 minutes, at most once an hour."
+echo "    It only looks at your internet connection and the sender, never at flyonfreq. Remove it any time with ./uninstall.sh."
+WD="${FFQ_WATCHDOG:-}"
+if [ -z "$WD" ]; then read -rp "    Install it? (y/N) " WD || WD="n"; fi
+case "$WD" in y|Y|yes|YES)
+  install -m 755 ffq-watchdog.sh "$DEST/ffq-watchdog.sh"
+  install -m 644 ffq-watchdog.service ffq-watchdog.timer "$(dirname "$UNIT")/"
+  if [ "$SYSTEMD" -eq 1 ]; then systemctl daemon-reload; systemctl enable --now ffq-watchdog.timer >/dev/null 2>&1 && echo "    watchdog installed."; else echo "    watchdog installed."; fi;;
+  *) echo "    skipped. (Run ./install.sh again any time to add it.)";;
+esac
 echo
 echo "Done. Watch it:   journalctl -u ffq-push -f        See what it sends:   python3 $DEST/ffq-push.py --dry-run"
 [ -z "$BACKUP" ] || echo "Your previous files: $BACKUP   (go back with: sudo ./uninstall.sh --restore \"$BACKUP\")"
