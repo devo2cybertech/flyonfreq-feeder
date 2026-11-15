@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.1.1 - 2026-11-14
+The sender opens a fresh connection at least every 5 minutes and after any error answer, so a connection that died silently can never keep it quiet. Same protocol, same settings.
+
 ## 1.1.0 - 2026-11-05
 Optional watchdog (asked at install, default no): starts the sender again after 5 minutes stopped, restarts the computer after 30 minutes offline or stuck, at most once an hour, never depends on flyonfreq. The sender itself is unchanged.
 

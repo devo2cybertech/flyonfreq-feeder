@@ -54,6 +54,9 @@ def sender_stats():
     return {k: v for k, v in out.items() if v is not None}
 
 
+RECYCLE_S = 300   # open a new connection at least this often
+
+
 def main():
     source = os.environ.get("FFQ_SOURCE", "/run/readsb/aircraft.json")
     every = float(os.environ.get("FFQ_EVERY", "2"))
@@ -66,15 +69,19 @@ def main():
         return
     url, key = os.environ["FFQ_URL"], os.environ["FFQ_KEY"]
     parts = urllib.parse.urlsplit(url)
-    conn = None
+    conn, opened = None, 0.0
     while True:
         started = time.time()
         try:
+            if conn is not None and started - opened > RECYCLE_S:   # a connection that died without a word must never hold the sender: a fresh one every few minutes (2026-11-14, the house radar went quiet for 10 minutes while the box was up)
+                conn.close()
+                conn = None
             body = trim(read_source(source))
             body["ffq"] = sender_stats()
             data = json.dumps(body).encode()
             if conn is None:
                 conn = (http.client.HTTPSConnection if parts.scheme == "https" else http.client.HTTPConnection)(parts.netloc, timeout=10)
+                opened = time.time()
             conn.request("POST", parts.path, body=data, headers={"Content-Type": "application/json", "X-Receiver-Key": key})
             resp = conn.getresponse()
             resp.read()
@@ -82,6 +89,9 @@ def main():
                 print("the server refused the key (401): check FFQ_KEY", file=sys.stderr)
             elif resp.status >= 400:
                 print("the server answered %d" % resp.status, file=sys.stderr)
+            if resp.status >= 400:
+                conn.close()   # start the next send on a fresh connection
+                conn = None
         except Exception as exc:  # no internet for a moment, readsb restarting: try again, never crash
             print("send failed: %s" % type(exc).__name__, file=sys.stderr)
             try:
