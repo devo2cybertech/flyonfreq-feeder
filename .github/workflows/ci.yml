@@ -2,7 +2,7 @@ name: tests
 on: [push, pull_request]
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04   # not ubuntu-latest: it moved to Ubuntu 26.04, which has no Python 3.9, and 3.9 is what older Raspberry Pi OS ships
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
